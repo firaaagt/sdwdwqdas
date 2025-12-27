@@ -1,0 +1,48 @@
+bukan pake in maksud aku pake ini name: Build llama.cpp ARM64
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-arm64:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Clone llama.cpp
+      run: git clone https://github.com/ggml-org/llama.cpp
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y cmake make git qemu-user-static gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+
+    - name: Configure CMake for ARM64
+      run: |
+        cd llama.cpp
+        mkdir -p build && cd build
+        cmake -S .. -B . \
+          -DCMAKE_SYSTEM_NAME=Linux \
+          -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
+          -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc \
+          -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+
+    - name: Build llama.cpp
+      run: |
+        cd llama.cpp/build
+        make -j$(nproc)
+
+    - name: Create ARM64 tarball
+      run: |
+        cd llama.cpp
+        tar czvf llama_arm64.tar.gz build/main examples scripts
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: llama_arm64
+        path: llama.cpp/llama_arm64.tar.gz
