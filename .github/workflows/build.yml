@@ -42,7 +42,7 @@ jobs:
           tar czvf llama_arm64.tar.gz build/main examples scripts
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: llama_arm64
           path: llama.cpp/llama_arm64.tar.gz
