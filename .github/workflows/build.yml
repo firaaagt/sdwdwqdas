@@ -21,7 +21,7 @@ jobs:
           sudo apt update
           sudo apt install -y cmake make git qemu-user-static gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
-      - name: Configure CMake for ARM64
+      - name: Configure CMake for ARM64 (disable CURL)
         run: |
           cd llama.cpp
           mkdir -p build && cd build
@@ -29,7 +29,8 @@ jobs:
             -DCMAKE_SYSTEM_NAME=Linux \
             -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
             -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc \
-            -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+            -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ \
+            -DLLAMA_CURL=OFF
 
       - name: Build llama.cpp
         run: |
